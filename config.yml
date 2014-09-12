@@ -1,0 +1,11 @@
+bokeh:
+  jshead:
+    - js/bokeh.js
+  css:
+    - css/bokeh.css
+  cdn:
+    jshead:
+      - http://cdn.pydata.org/bokeh-0.6.0.min.js
+    css:
+      - http://cdn.pydata.org/bokeh-0.6.0.min.css
+
