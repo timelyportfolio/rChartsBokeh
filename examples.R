@@ -1,9 +1,18 @@
+# we will progress through a series of steps
+# of how to build a Bokeh binding in rCharts
+
 library(rCharts)
+library(jsonlite)
 
 rB <- rCharts$new()
 rB$setLib(".")
 rB$lib = "bokeh"
 rB$LIB$name = "bokeh"
+
+
+# Step 1) scatter example from bokeh docs
+#         this does not pass any data or configuration from R
+#         all is determined from JS/Coffeescript
 
 rB$setTemplate(
   chartDiv = "<div></div>"
@@ -96,3 +105,122 @@ Bokeh.Plotting.show(plot);
 )
 
 rB$show(cdn=T)
+
+
+
+
+# Step 2) scatter example from bokeh docs
+#         data from R but config still from JS/Coffeescript
+
+# data is an object with 4000 random points defined by 4 arrays
+# {x, y, radius, color}
+# we will produce something similar with a R data.frame
+# seed if I'm reading properly is 123456789
+set.seed(123456789)
+bokehData <- data.frame(
+  x = runif( 4000 ) * 100
+  , y = runif( 4000 ) * 100
+  , radius = runif( 4000 ) + 0.3
+)
+# color is determined by x and y so do that here
+bokehData$color = paste0(
+  "rgb("
+  , (floor(50 + 2 * bokehData$x))
+  , ", "
+  , (floor(30 + 2 * bokehData$y))
+  , ", 150)"
+)
+# supply our data to the chart
+rB$set( data = bokehData )
+
+rB$setTemplate(
+  script =
+'
+<script>
+  var params = {{{ chartParams }}}
+  scatter = {
+    type: "circle",
+    x: "x",
+    y: "y",
+    radius: "radius",
+    radius_units: "data",
+    fill_color: "color",
+    fill_alpha: 0.6,
+    line_color: null
+  };
+
+  options = {
+    title: "Scatter Demo",
+    dims: [600, 600],
+    xrange: [0, 100],
+    yrange: [0, 100],
+    xaxes: "below",
+    yaxes: "left",
+    tools: true,
+    legend: false
+  };
+
+  plot = Bokeh.Plotting.make_plot(scatter, params.data, options);
+
+  Bokeh.Plotting.show(plot);
+</script>
+'
+)
+rB$show(cdn = T)
+
+
+
+# Step 3) supply data and config from R
+#         to start let's just make the JSON a list
+#         and give that to bokeh
+#         to convert JSON to list replace
+#           : with =
+#           { } with list()
+#           [] with c()
+#           null with "#!null!#"
+#           true false with TRUE FALSE
+
+scatter = list(
+  type= "circle",
+  x= "x",
+  y= "y",
+  radius= "radius",
+  radius_units= "data",
+  fill_color= "color",
+  fill_alpha= 0.6,
+  line_color= "#!null!#"
+)
+
+options = list(
+  title= "Scatter Demo",
+  dims= c(600, 600),
+  xrange= c(0, 100),
+  yrange= c(0, 100),
+  xaxes= "below",
+  yaxes= "left",
+  tools= TRUE,
+  legend= FALSE
+)
+
+# provide our new scatter and options lists to Bokeh
+rB$set(
+  glyph = scatter
+  , options = options
+)
+
+# change our template to use the R provided spec
+rB$setTemplate(
+  script =
+'
+<script>
+  var params = {{{ chartParams }}}
+
+  
+  plot = Bokeh.Plotting.make_plot(params.glyph, params.data, params.options);
+  
+  Bokeh.Plotting.show(plot);
+</script>
+'
+)
+
+rB$show( cdn = T)
