@@ -15,7 +15,7 @@ rB$LIB$name = "bokeh"
 #         all is determined from JS/Coffeescript
 
 rB$setTemplate(
-  chartDiv = "<div></div>"
+  chartDiv = "<div></div>"  # will use the rCharts generated div next time
   ,script =
 '
 <script>
@@ -134,7 +134,8 @@ bokehData$color = paste0(
 rB$set( data = bokehData )
 
 rB$setTemplate(
-  script =
+  chartDiv = rCharts$new()$templates$chartDiv  # back to rCharts generated div
+  ,script =
 '
 <script>
   var params = {{{ chartParams }}}
@@ -162,7 +163,7 @@ rB$setTemplate(
 
   plot = Bokeh.Plotting.make_plot(scatter, params.data, options);
 
-  Bokeh.Plotting.show(plot);
+  Bokeh.Plotting.show(plot, "#{{ chartId }}" );
 </script>
 '
 )
@@ -218,7 +219,7 @@ rB$setTemplate(
   
   plot = Bokeh.Plotting.make_plot(params.plot, params.data, params.options);
   
-  Bokeh.Plotting.show(plot);
+  Bokeh.Plotting.show(plot, "#{{ chartId }}");
 </script>
 '
 )
