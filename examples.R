@@ -204,7 +204,7 @@ options = list(
 
 # provide our new scatter and options lists to Bokeh
 rB$set(
-  glyph = scatter
+  plot = scatter
   , options = options
 )
 
@@ -216,7 +216,7 @@ rB$setTemplate(
   var params = {{{ chartParams }}}
 
   
-  plot = Bokeh.Plotting.make_plot(params.glyph, params.data, params.options);
+  plot = Bokeh.Plotting.make_plot(params.plot, params.data, params.options);
   
   Bokeh.Plotting.show(plot);
 </script>
