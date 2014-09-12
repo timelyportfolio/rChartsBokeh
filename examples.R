@@ -177,7 +177,7 @@ rB$show(cdn = T)
 #           : with =
 #           { } with list()
 #           [] with c()
-#           null with "#!null!#"
+#           null with NA
 #           true false with TRUE FALSE
 
 scatter = list(
@@ -188,7 +188,7 @@ scatter = list(
   radius_units= "data",
   fill_color= "color",
   fill_alpha= 0.6,
-  line_color= "#!null!#"
+  line_color= NA
 )
 
 options = list(
