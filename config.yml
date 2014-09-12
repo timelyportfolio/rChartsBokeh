@@ -5,7 +5,7 @@ bokeh:
     - css/bokeh.css
   cdn:
     jshead:
-      - http://cdn.pydata.org/bokeh-0.6.0.min.js
+      - http://cdn.pydata.org/bokeh-0.6.0.js
     css:
       - http://cdn.pydata.org/bokeh-0.6.0.min.css
 
